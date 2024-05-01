@@ -23,5 +23,5 @@ app.setErrorHandler((error, _request, reply) => {
     // TODO: Aqui devemos relizar logs em alguma ferramenta externa como Datadog/NewRelic/Sentry.
   }
 
-  return reply.status(500).send({ message: 'Interno erro do servidor.' })
+  return reply.status(500).send({ message: 'Erro interno do servidor.' })
 })
