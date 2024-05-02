@@ -1,17 +1,22 @@
 import { compare } from 'bcryptjs'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 import { InMemoryUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
 
 import { RegisterUseCase } from '.'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-describe('Register Use Case', () => {
-  it('A senha do usuário deve ser criptografada no momento do registro.', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
+let usersRepository: InMemoryUsersRepository
+let sut: RegisterUseCase
 
-    const { user } = await registerUseCase.execute({
+describe('Register Use Case', () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository()
+    sut = new RegisterUseCase(usersRepository)
+  })
+
+  it('A senha do usuário deve ser criptografada no momento do registro.', async () => {
+    const { user } = await sut.execute({
       name: 'Hilquias Ferreira Melo',
       email: 'hilquiasfmelo@hotmail.com',
       password: '123456',
@@ -24,19 +29,16 @@ describe('Register Use Case', () => {
   })
 
   it('Não deve ser possível criar um usuário com um e-mail repetido.', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
     const email = 'hilquiasfmelo@hotmail.com'
 
-    await registerUseCase.execute({
+    await sut.execute({
       name: 'Hilquias Ferreira Melo',
       email,
       password: '123456',
     })
 
     expect(async () => {
-      await registerUseCase.execute({
+      await sut.execute({
         name: 'Hilquias Ferreira Melo',
         email,
         password: '123456',
@@ -44,11 +46,8 @@ describe('Register Use Case', () => {
     }).rejects.toBeInstanceOf(UserAlreadyExistsError)
   })
 
-  it('Deve ser possível registrar um usuário.', async () => {
-    const usersRepository = new InMemoryUsersRepository()
-    const registerUseCase = new RegisterUseCase(usersRepository)
-
-    const { user } = await registerUseCase.execute({
+  it('Deve ser possível registrar o usuário.', async () => {
+    const { user } = await sut.execute({
       name: 'Hilquias Ferreira Melo',
       email: 'hilquiasfmelo@hotmail.com',
       password: '123456',
