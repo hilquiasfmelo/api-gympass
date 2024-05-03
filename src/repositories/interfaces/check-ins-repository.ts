@@ -5,4 +5,8 @@ export interface CheckInsRepository {
   create(data: Prisma.CheckInUncheckedCreateInput): Promise<CheckIn>
   // Busca se existe um check-in de um usuário em uma determinada data.
   findByUserIdOnDate(userId: string, date: Date): Promise<CheckIn | null>
+  // Busca todos os check ins de um usuário.
+  findManyByUserId(userId: string, page: number): Promise<CheckIn[]>
+  // Busca a quantidade de check ins feito pelo usuário.
+  countByUserId(userId: string): Promise<number>
 }
