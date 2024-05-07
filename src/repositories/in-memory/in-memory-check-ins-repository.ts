@@ -9,6 +9,16 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
   // Criação da base de dados fictícia
   public items: CheckIn[] = []
 
+  async findById(id: string) {
+    const checkIn = this.items.find((item) => item.id === id)
+
+    if (!checkIn) {
+      return null
+    }
+
+    return checkIn
+  }
+
   async countByUserId(userId: string) {
     return this.items.filter((item) => item.user_id === userId).length
   }
@@ -53,6 +63,21 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     }
 
     this.items.push(checkIn)
+
+    return checkIn
+  }
+
+  async save(checkIn: CheckIn) {
+    // Busca o check in pelo index dele salvo nesse caso em memória.
+    const checkInIndex = this.items.findIndex((item) => item.id === checkIn.id)
+
+    /**
+     * find chama o predicado uma vez para cada elemento do array, em ordem crescente, até encontrar um onde o predicado retorne verdadeiro.
+     * * Se tal elemento for encontrado, findIndex retornará imediatamente o índice desse elemento. Caso contrário, findIndex retornará -1.
+     */
+    if (checkInIndex >= 0) {
+      this.items[checkInIndex] = checkIn
+    }
 
     return checkIn
   }

@@ -2,7 +2,12 @@ import { randomUUID } from 'node:crypto'
 
 import { Gym, Prisma } from '@prisma/client'
 
-import type { GymsRepository } from '../interfaces/gyms-repository'
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
+
+import type {
+  FindManyNearbyParams,
+  GymsRepository,
+} from '../interfaces/gyms-repository'
 
 export class InMemoryGymsRepository implements GymsRepository {
   // Criação da base de dados fictícia
@@ -22,6 +27,25 @@ export class InMemoryGymsRepository implements GymsRepository {
     }
 
     return gym
+  }
+
+  // Retorna as academias cadastradas que estão à menos de 10km de distância do usuário.
+  async findManyNearby(params: FindManyNearbyParams) {
+    return this.items.filter((item) => {
+      const distance = getDistanceBetweenCoordinates(
+        {
+          latitude: params.latitude,
+          longitude: params.longitude,
+        },
+        {
+          // Tem que ser convertido para um número, pois o Prisma retorna um valor do tipo Decimal.
+          latitude: item.latitude.toNumber(),
+          longitude: item.longitude.toNumber(),
+        },
+      )
+
+      return distance < 10
+    })
   }
 
   async create(data: Prisma.GymCreateInput) {
