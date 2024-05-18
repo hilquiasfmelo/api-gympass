@@ -1,18 +1,28 @@
+import fastifyJwt from '@fastify/jwt'
 import fastify from 'fastify'
 import { ZodError } from 'zod'
 
 import { env } from './env'
-import { appRoutes } from './http/routes'
+import { checkInsRoutes } from './http/controllers/check-ins/routes'
+import { gymsRoutes } from './http/controllers/gyms/routes'
+import { usersRoutes } from './http/controllers/users/routes'
 
 export const app = fastify()
 
-app.register(appRoutes)
+// Registando o JWT na aplicação.
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+})
+
+app.register(usersRoutes)
+app.register(gymsRoutes)
+app.register(checkInsRoutes)
 
 // Tratando erros globais.
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
     return reply.status(400).send({
-      message: 'Obteve-se um erro em alguma validação dos dados.',
+      message: 'Houve erro em alguma validação dos dados.',
       issues: error.format(),
     })
   }

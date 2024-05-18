@@ -6,6 +6,8 @@ const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'test', 'production']).default('dev'),
   // coerce => Busca algum dado e converte para um formato dele.
   PORT: z.coerce.number().default(3333),
+  JWT_SECRET: z.string(),
+  DATABASE_URL: z.string().url(),
 })
 
 // safeParse => Tenta fazer a validação para saber se existem essas informações das variáveis.
