@@ -17,7 +17,8 @@ describe('Validate CheckIn (e2e)', () => {
   })
 
   it('Deve ser possível validar um check-in.', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    // true => defini o usuário como Admin na aplicação.
+    const { token } = await createAndAuthenticateUser(app, true)
 
     // Busca o primeiro usuário cadastrado na base de dados.
     const user = await prisma.user.findFirstOrThrow()

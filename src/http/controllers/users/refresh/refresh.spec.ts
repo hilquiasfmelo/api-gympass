@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { app } from '@/app'
 import { createAndAuthenticateUser } from '@/utils/test/create-and-authenticate-user'
 
-describe('Create Gym (e2e)', () => {
+describe('Refresh Token (e2e)', () => {
   beforeAll(async () => {
     // Aguarda a aplicação inicializar antes de todos os testes.
     await app.ready()
@@ -15,20 +15,20 @@ describe('Create Gym (e2e)', () => {
     await app.close()
   })
 
-  it('Deve ser possível criar uma academia.', async () => {
-    const { token } = await createAndAuthenticateUser(app, true)
+  it('Deve ser possível atualizar um token', async () => {
+    const { cookies } = await createAndAuthenticateUser(app, true)
 
     const response = await request(app.server)
-      .post('/gyms')
-      .set('Authorization', `Bearer ${token}`)
-      .send({
-        title: 'Chad Castro Gym',
-        description: 'Somente uma descrição.',
-        phone: '965-6998',
-        latitude: -2.557903,
-        longitude: -44.1990842,
-      })
+      .patch('/token/refresh')
+      .set('Cookie', cookies)
+      .send()
 
-    expect(response.statusCode).toEqual(201)
+    expect(response.statusCode).toEqual(200)
+    expect(response.body).toEqual({
+      token: expect.any(String),
+    })
+    expect(response.get('Set-Cookie')).toEqual([
+      expect.stringContaining('refreshToken='),
+    ])
   })
 })

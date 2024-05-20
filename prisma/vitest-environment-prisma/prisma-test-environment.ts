@@ -8,8 +8,6 @@ import { Environment } from 'vitest'
 
 const prisma = new PrismaClient()
 
-// "postgresql://docker:docker@localhost:5432/dbgympass?schema=public"
-
 function generateDatabaseURL(schema: string) {
   if (!process.env.DATABASE_URL) {
     throw new Error('Por favor, insira a variável de ambient DATABASE_URL.')
@@ -27,7 +25,6 @@ export default <Environment>{
   name: 'prisma',
   transformMode: 'ssr',
 
-  // Executa antes de cada arquivo de teste.
   async setup() {
     const schema = randomUUID()
 
@@ -35,12 +32,9 @@ export default <Environment>{
 
     process.env.DATABASE_URL = databaseURL
 
-    // execSync => executa um comando como se estivesse no terminal.
-    // deploy => realiza as migrations sem verificar alterações nas mesmas.
     execSync('pnpm prisma migrate deploy')
 
     return {
-      // Executa após os testes da aplicação executarem.
       async teardown() {
         await prisma.$executeRawUnsafe(
           `DROP SCHEMA IF EXISTS "${schema}" CASCADE`,

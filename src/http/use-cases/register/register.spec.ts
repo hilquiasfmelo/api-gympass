@@ -20,6 +20,7 @@ describe('Register Use Case', () => {
       name: 'Hilquias Ferreira Melo',
       email: 'hilquiasfmelo@hotmail.com',
       password: '123456',
+      role: 'MEMBER',
     })
 
     // Compara se a senha informada é igual a senha criptografada na base de dados.
@@ -33,8 +34,9 @@ describe('Register Use Case', () => {
 
     await sut.execute({
       name: 'Hilquias Ferreira Melo',
-      email,
+      email: 'hilquiasfmelo@hotmail.com',
       password: '123456',
+      role: 'MEMBER',
     })
 
     expect(async () => {
@@ -42,6 +44,7 @@ describe('Register Use Case', () => {
         name: 'Hilquias Ferreira Melo',
         email,
         password: '123456',
+        role: 'MEMBER',
       })
     }).rejects.toBeInstanceOf(UserAlreadyExistsError)
   })
@@ -51,6 +54,7 @@ describe('Register Use Case', () => {
       name: 'Hilquias Ferreira Melo',
       email: 'hilquiasfmelo@hotmail.com',
       password: '123456',
+      role: 'MEMBER',
     })
 
     // Espero que Id do usuário criado seja igual a qualquer string

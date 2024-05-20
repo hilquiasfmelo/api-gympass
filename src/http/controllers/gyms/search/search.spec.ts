@@ -16,7 +16,7 @@ describe('Search Gyms (e2e)', () => {
   })
 
   it('Deve ser possível buscar uma academia pelo título.', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
 
     // Criação de uma academia.
     await request(app.server)

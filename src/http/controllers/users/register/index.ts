@@ -5,14 +5,17 @@ import { UserAlreadyExistsError } from '@/http/use-cases/register/errors/user-al
 import { makeRegisterUseCase } from '@/http/use-cases/register/factory/make-register-use-case'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
+  const Role = z.enum(['ADMIN', 'MEMBER'])
+
   const registerBodySchema = z.object({
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
+    role: Role.default('MEMBER'),
   })
 
   // parse => dispara automaticamente um erro caso a validação não esteja de acordo, fazendo assim com que todo o código abaixo após ele não execute mais.
-  const { name, email, password } = registerBodySchema.parse(request.body)
+  const { name, email, password, role } = registerBodySchema.parse(request.body)
 
   try {
     const registerUseCase = makeRegisterUseCase()
@@ -21,6 +24,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       name,
       email,
       password,
+      role,
     })
   } catch (err) {
     if (err instanceof UserAlreadyExistsError) {

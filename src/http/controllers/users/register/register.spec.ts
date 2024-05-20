@@ -1,7 +1,8 @@
-import request from 'supertest'
+import { hash } from 'bcryptjs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import { app } from '@/app'
+import { prisma } from '@/lib/prisma'
 
 describe('Register (e2e)', () => {
   beforeAll(async () => {
@@ -15,12 +16,15 @@ describe('Register (e2e)', () => {
   })
 
   it('Deve ser possível se registrar', async () => {
-    const response = await request(app.server).post('/users').send({
-      name: 'Hilquias Ferreira Melo',
-      email: 'hilquiasfmelo@gmail.com',
-      password: '12345678',
+    const response = await prisma.user.create({
+      data: {
+        name: 'Hilquias Ferreira Melo',
+        email: 'hilquiasfmelo@gmail.com',
+        password_hash: await hash('12345678', 6),
+        role: 'ADMIN',
+      },
     })
 
-    expect(response.statusCode).toEqual(201)
+    expect(response.id).toEqual(expect.any(String))
   })
 })

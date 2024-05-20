@@ -1,3 +1,4 @@
+import fastifyCookie from '@fastify/cookie'
 import fastifyJwt from '@fastify/jwt'
 import fastify from 'fastify'
 import { ZodError } from 'zod'
@@ -12,7 +13,18 @@ export const app = fastify()
 // Registando o JWT na aplicação.
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
+  cookie: {
+    cookieName: 'refreshToken',
+    signed: false,
+  },
+  sign: {
+    // A cada 10 min a aplicação checa se o usuário tem um refresh token para atualizar o token original.
+    expiresIn: '10m',
+  },
 })
+
+// Registrando os cookies.
+app.register(fastifyCookie)
 
 app.register(usersRoutes)
 app.register(gymsRoutes)

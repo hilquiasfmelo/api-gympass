@@ -16,7 +16,7 @@ describe('Nearby Gyms (e2e)', () => {
   })
 
   it('Deve ser possível listar academias próximas.', async () => {
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, true)
 
     // Criação de uma academia.
     await request(app.server)

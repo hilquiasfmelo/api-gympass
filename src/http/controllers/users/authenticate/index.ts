@@ -26,7 +26,10 @@ export async function authenticate(
 
     // Criação do token JWT assim que o usuário se autentica. Passando no payload a informação do seu ID.
     const token = await reply.jwtSign(
-      {},
+      {
+        // Envia no payload qual o cargo desse usuário.
+        role: user.role,
+      },
       {
         sign: {
           sub: user.id,
@@ -34,9 +37,35 @@ export async function authenticate(
       },
     )
 
-    return reply.status(200).send({
-      token,
-    })
+    // Token secundário gerado para ativar o token original e continuar deixando o usuário logado.
+    const refreshToken = await reply.jwtSign(
+      {
+        // Envia no payload qual o cargo desse usuário.
+        role: user.role,
+      },
+      {
+        sign: {
+          sub: user.id,
+          // O usuário só vai perder o acesso se ficar 7 dias sem acessar a aplicação.
+          expiresIn: '7d',
+        },
+      },
+    )
+
+    return reply
+      .setCookie('refreshToken', refreshToken, {
+        // Define quais rotas da aplicação terão acesso a esse cookie.
+        path: '/',
+        // Define que o cookie será encriptado através do HTTPs.
+        secure: true,
+        sameSite: true,
+        // Define somente acesso ao cookie através de requisição e resposta, não fica salvo no browser.
+        httpOnly: true,
+      })
+      .status(200)
+      .send({
+        token,
+      })
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
       return reply.status(400).send({
