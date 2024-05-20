@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 20
           # Habilita o cache para execução mais rápida do CI.
-          cache: 'pnpm'
+          cache: 'npm'
       # Instala as dependências sem realizar qualquer tipo de verificação.
-      - run: pnpm ci
-      - run: pnpm run test
+      - run: npm ci
+      - run: npm run test
