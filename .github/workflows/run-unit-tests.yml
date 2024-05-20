@@ -19,5 +19,5 @@ jobs:
           # Habilita o cache para execução mais rápida do CI.
           cache: 'npm'
       # Instala as dependências sem realizar qualquer tipo de verificação.
-      - run: npm ci
-      - run: npm run test
+      - run: pnpm ci
+      - run: pnpm run test
