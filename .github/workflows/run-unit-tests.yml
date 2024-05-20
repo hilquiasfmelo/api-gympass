@@ -1,0 +1,23 @@
+name: Run Unit Tests
+
+# Defini quando será executado esse workflow, que nesse caso é quando haver um push no código para o Github.
+on: [push]
+
+jobs:
+  run-unit-tests:
+    name: Run Unit Tests
+    # Defini qual sistema operacional será usado.
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo que baixa o código da aplicação.
+      - uses: actions/checkout@v3
+      # Passo que instala o node e defini sua versão.
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          # Habilita o cache para execução mais rápida do CI.
+          cache: 'pnpm'
+      # Instala as dependências sem realizar qualquer tipo de verificação.
+      - run: pnpm ci
+      - run: pnpm run test

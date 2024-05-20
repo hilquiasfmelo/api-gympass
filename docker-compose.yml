@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3"
 
 services:
   gympass:
@@ -10,3 +10,8 @@ services:
       - POSTGRESQL_USERNAME=docker
       - POSTGRESQL_PASSWORD=docker
       - POSTGRESQL_DATABASE=dbgympass
+    volumes:
+      - ./.postgres-data:/var/lib/postgresql/data
+
+volumes:
+  .postgres-data:
