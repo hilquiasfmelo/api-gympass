@@ -1,0 +1,37 @@
+name: Run E2E Tests
+
+on: [pull_request]
+
+jobs:
+  run-e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: bitnami/postgresql
+        ports:
+          - 5432:5432
+        env:
+          POSTGRESQL_USERNAME: docker
+          POSTGRESQL_PASSWORD: docker
+          POSTGRESQL_DATABASE: dbgympass
+
+    steps:
+      # Passo que baixa o código da aplicação.
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      # Passo que instala o node e defini sua versão.
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          # Habilita o cache para execução mais rápida do CI.
+          cache: 'pnpm'
+      # Instala as dependências sem realizar qualquer tipo de verificação.
+      - run: pnpm install
+      - run: pnpm run test:e2e
+        env:
+          JWT_SECRET: "ErTZzO9lkzHNxDXQJCsJAhOaBrlJxhRZ9t0366DGQYo="
+          DATABASE_URL: "postgresql://docker:docker@localhost:5432/dbgympass?schema=public"
