@@ -12,12 +12,15 @@ jobs:
     steps:
       # Passo que baixa o código da aplicação.
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
       # Passo que instala o node e defini sua versão.
       - uses: actions/setup-node@v3
         with:
           node-version: 20
           # Habilita o cache para execução mais rápida do CI.
-          cache: 'npm'
+          cache: 'pnpm'
       # Instala as dependências sem realizar qualquer tipo de verificação.
-      - run: pnpm ci
+      - run: pnpm install
       - run: pnpm run test
