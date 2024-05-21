@@ -31,7 +31,7 @@ jobs:
           cache: 'pnpm'
       # Instala as dependências sem realizar qualquer tipo de verificação.
       - run: pnpm install
-      - run: pnpm prisma migrate deploy
+      - run: bunx prisma migrate deploy
       - run: pnpm run test:e2e
         env:
           JWT_SECRET: "ErTZzO9lkzHNxDXQJCsJAhOaBrlJxhRZ9t0366DGQYo="
