@@ -31,6 +31,7 @@ jobs:
           cache: 'pnpm'
       # Instala as dependências sem realizar qualquer tipo de verificação.
       - run: pnpm install
+      - run: pnpm run pretest:e2e
       - run: pnpm run test:e2e
         env:
           JWT_SECRET: "ErTZzO9lkzHNxDXQJCsJAhOaBrlJxhRZ9t0366DGQYo="
